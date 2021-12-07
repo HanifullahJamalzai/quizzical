@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./components/style.css";
 import Intro from "./components/Intro";
 import Question from "./components/Question";
+import { nanoid } from "nanoid";
 
 function App() {
 	const [intro, setIntro] = useState(false);
@@ -16,6 +17,9 @@ function App() {
 			.then((data) => setQuestions(data.results));
 	}, [intro]);
 
+	const questionElement = questions.map((question) => (
+		<Question key={nanoid} {...question} />
+	));
 	return (
 		<div>
 			<svg
@@ -41,7 +45,9 @@ function App() {
 					}}
 				/>
 			)}
-			{intro && <Question {...questions} />}
+			{intro && questionElement}
+
+			{intro && <button className="check--button">Check answers</button>}
 
 			<svg
 				className="bottom--svg"
