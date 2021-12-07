@@ -2,24 +2,53 @@ import React, { useState, useEffect } from "react";
 import "./components/style.css";
 import Intro from "./components/Intro";
 import Question from "./components/Question";
-import { nanoid } from "nanoid";
 
 function App() {
-	const [intro, setIntro] = useState(false);
-	const [questions, setQuestions] = useState([]);
-	// console.log(questions);
-	// https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple
+	const [data, setData] = useState([]);
+	const [start, setStart] = useState(false);
+
 	useEffect(() => {
 		fetch(
 			"https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple"
 		)
 			.then((res) => res.json())
-			.then((data) => setQuestions(data.results));
-	}, [intro]);
+			.then((data) => setData(data.results));
+	}, [start]);
 
-	const questionElement = questions.map((question) => (
-		<Question key={nanoid} {...question} />
+	function setRandomAnswers(arrData) {
+		setData((prevState) => {
+			return prevState.map((question) => {
+				const randomAnswers = [];
+				const newAllAnswers = [];
+				const allAnswers = [
+					...question.incorrect_answers,
+					question.correct_answer,
+				];
+
+				for (let i = 0; i < allAnswers.length; i++) {
+					randomAnswers.push(i);
+				}
+				for (let i = 0; i < allAnswers.length; i++) {
+					const randomIndex = Math.floor(Math.random() * randomAnswers.length);
+					const randomValueIndex = randomAnswers[randomIndex];
+					randomAnswers.splice(randomIndex, 1); //from randomAnswers i erase one of the index values so is not used again so i dont push the same answer to newAllAnswers
+					newAllAnswers.push(allAnswers[randomValueIndex]);
+				}
+				return {
+					...question,
+					randomAnswers: [...newAllAnswers],
+				};
+			});
+		});
+	}
+	//if our data doesnt have the prop randomAnswers i call setRandomAnswers to create it
+	if (!data.every((item) => item.randomAnswers)) {
+		setRandomAnswers(data);
+	}
+	const dataElement = data.map((question, index) => (
+		<Question key={index} question={question} />
 	));
+
 	return (
 		<div>
 			<svg
@@ -38,16 +67,16 @@ function App() {
 				/>
 			</svg>
 
-			{!intro && (
+			{!start && (
 				<Intro
-					intro={() => {
-						setIntro((prevIntro) => !prevIntro);
+					start={() => {
+						setStart((prevIntro) => !prevIntro);
 					}}
 				/>
 			)}
-			{intro && questionElement}
+			{start && dataElement}
 
-			{intro && <button className="check--button">Check answers</button>}
+			{start && <button className="check--button">Check answers</button>}
 
 			<svg
 				className="bottom--svg"

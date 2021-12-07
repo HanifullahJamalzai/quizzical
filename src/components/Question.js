@@ -1,18 +1,41 @@
 import { nanoid } from "nanoid";
-import React from "react";
+import React, { useState } from "react";
 import Answer from "./Answer";
 
 export default function Question(props) {
-	console.log(props);
+	// console.log(props.question.randomAnswers);
+	// const answerElement = props.question.randomAnswers.map((answer, index) => {
+	// 	// <Answer key={index} />;
+	// 	<div>
+	// 		<button key={index} className="answer--button">
+	// 			{answer.answer}
+	// 		</button>
+	// 		;
+	// 		<hr />;
+	// 	</div>;
+	// });
+	// const answerElement = props.question.randomAnswers.map((answer, index) => {
+	// 		<div>
+	// 			<button key={index} className="answer--button">
+	// 				{answer}
+	// 			</button>
+	// 			<hr />
+	// 		</div>
+	// }
 	return (
 		<div className="question--container">
-			<h2 className="question--description">{props.question}</h2>
+			<h2 className="question--description">{props.question.question}</h2>
 			<div className="answer--container">
-				{props.incorrect_answers.map((answer) => (
-					<Answer answer={answer} correct={answer.correct_answer} />
-				))}
+				{props.question.randomAnswers.map((answer, index) => {
+					// <Answer key={index} />;
+					<div>
+						<button key={index} className="answer--button">
+							{answer}
+						</button>
+					</div>;
+				})}
+				<hr />
 			</div>
-			<hr />
 		</div>
 	);
 }
