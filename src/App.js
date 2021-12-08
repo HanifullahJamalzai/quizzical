@@ -133,9 +133,7 @@ function App() {
 				/>
 			)}
 
-			{start && data.length > 0
-				? dataElement
-				: start && <LinearProgress variant="buffer" value="progress" />}
+			{start && data.length > 0 ? dataElement : start && <LinearProgress />}
 
 			{checkedAnswers && (
 				<p className="score">
