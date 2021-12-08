@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./components/style.css";
 import Intro from "./components/Intro";
 import Question from "./components/Question";
-
+import { Alert, LinearProgress } from "@mui/material";
 function App() {
 	const [data, setData] = useState([]);
 	const [start, setStart] = useState(false);
+	const [checkedAnswers, setCheckedAnswers] = useState(false);
+	const [score, setScore] = useState(0);
 
 	useEffect(() => {
 		fetch(
@@ -45,8 +47,64 @@ function App() {
 	if (!data.every((item) => item.randomAnswers)) {
 		setRandomAnswers(data);
 	}
+	function handleClick(id, answerClicked) {
+		if (!checkedAnswers) {
+			setData((prevData) => {
+				return prevData.map((question) => {
+					if (question.question === id) {
+						return {
+							...question,
+							answer: answerClicked,
+						};
+					} else return question;
+				});
+			});
+		}
+	}
+	function checkAnswers() {
+		if (data.every((val) => val.answer)) {
+			setData((prevState) => {
+				return prevState.map((question) => {
+					if (question.answer !== question.correct_answer) {
+						return {
+							...question,
+							wrong: question.correct_answer,
+							height: question.answer,
+						};
+					} else {
+						return {
+							...question,
+							highlight: question.answer,
+						};
+					}
+				});
+			});
+			setCheckedAnswers(true);
+		} else {
+			alert("You must select an answer for every question");
+			// console.log("error");
+			// <Alert severity="info">
+			// 	You should select an answer for every Question
+			// </Alert>;
+			// <Alert severity="error">This is an error alert — check it out!</Alert>
+		}
+		setScore(
+			data.reduce((acc, item) => {
+				let num = 0;
+				if (item.correct_answer === item.answer) {
+					acc += 1;
+				}
+				return acc;
+			}, 0)
+		);
+	}
+	function newGame() {
+		setCheckedAnswers(false);
+		setScore(0);
+		setStart((prevState) => !prevState);
+	}
 	const dataElement = data.map((question, index) => (
-		<Question key={index} question={question} />
+		<Question key={index} question={question} handleClick={handleClick} />
 	));
 
 	return (
@@ -74,9 +132,27 @@ function App() {
 					}}
 				/>
 			)}
-			{start && dataElement}
 
-			{start && <button className="check--button">Check answers</button>}
+			{start && data.length > 0
+				? dataElement
+				: start && <LinearProgress variant="buffer" value="progress" />}
+
+			{checkedAnswers && (
+				<p className="score">
+					You scored {score}/{data.length} correct answers
+				</p>
+			)}
+			{start && !checkedAnswers ? (
+				<button className="check--button" onClick={checkAnswers}>
+					Check answers
+				</button>
+			) : (
+				start && (
+					<button className="check--button" onClick={newGame}>
+						Play again
+					</button>
+				)
+			)}
 
 			<svg
 				className="bottom--svg"
