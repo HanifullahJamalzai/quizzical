@@ -106,6 +106,14 @@ hr {
 	box-shadow: 0px 3px 20px 1px #d6dbf5;
 	/* color: #fff; */
 }
+
+.score--button {
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	align-items: center;
+	margin: 0px 400px;
+}
 .check--button {
 	background-color: #4d5b9e;
 	width: 150px;
@@ -116,7 +124,7 @@ hr {
 	font-size: 16px;
 	margin-top: 1rem;
 	cursor: pointer;
-	margin: 20px 50%;
+	margin-left: 30px;
 }
 
 .score {

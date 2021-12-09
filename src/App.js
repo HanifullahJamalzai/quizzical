@@ -134,23 +134,24 @@ function App() {
 			)}
 
 			{start && data.length > 0 ? dataElement : start && <LinearProgress />}
-
-			{checkedAnswers && (
-				<p className="score">
-					You scored {score}/{data.length} correct answers
-				</p>
-			)}
-			{start && !checkedAnswers ? (
-				<button className="check--button" onClick={checkAnswers}>
-					Check answers
-				</button>
-			) : (
-				start && (
-					<button className="check--button" onClick={newGame}>
-						Play again
+			<div className="score--button">
+				{checkedAnswers && (
+					<p className="score">
+						You scored {score}/{data.length} correct answers
+					</p>
+				)}
+				{start && !checkedAnswers ? (
+					<button className="check--button" onClick={checkAnswers}>
+						Check answers
 					</button>
-				)
-			)}
+				) : (
+					start && (
+						<button className="check--button" onClick={newGame}>
+							Play again
+						</button>
+					)
+				)}
+			</div>
 
 			<svg
 				className="bottom--svg"
